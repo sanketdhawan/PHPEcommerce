@@ -1,0 +1,25 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <label for="username">Username:</label>
+    <input id="username" formControlName="username" type="text">
+    <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+        <small>Username is required.</small>
+    </div>
+
+    <label for="email">Email:</label>
+    <input id="email" formControlName="email" type="email">
+    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        <small>Please enter a valid email.</small>
+    </div>
+
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password">
+    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        <small>Password must be at least 6 characters long.</small>
+    </div>
+
+    <button type="submit">Register</button>
+</form>
+
+<ngb-alert *ngIf="alertMessage" [type]="alertType" (close)="alertMessage = ''">
+    {{ alertMessage }}
+</ngb-alert>

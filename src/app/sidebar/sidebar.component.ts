@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SidebarItem, SIDEBAR_MENU } from '../_data/data';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../_services/authentication.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,8 +12,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  menuItems: SidebarItem[] = SIDEBAR_MENU;
-
+  menuItems: SidebarItem[] = [];
+  
+  constructor(private authService: AuthService) {}
   @Input() name!: string;
 
   isOpen= false;
