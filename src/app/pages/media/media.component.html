@@ -1,0 +1,114 @@
+<div class="file-manager-container">
+  <div>
+    <input type="file" (change)="onFileSelected($event)" />
+    <button (click)="onUpload()" ngbTooltip="Upload a file">Upload</button>
+    <ngb-alert
+      *ngIf="uploadSuccess"
+      type="success"
+      (close)="uploadSuccess = false"
+      >File uploaded successfully!</ngb-alert
+    >
+  </div>
+
+  <div>
+    <input
+      type="number"
+      [(ngModel)]="deleteId"
+      placeholder="Enter file ID to delete"
+    />
+    <button (click)="openDeleteModal(deleteModal)" ngbTooltip="Delete a file">
+      Delete
+    </button>
+    <ngb-alert
+      *ngIf="deleteSuccess"
+      type="success"
+      (close)="deleteSuccess = false"
+      >File deleted successfully!</ngb-alert
+    >
+  </div>
+
+  <div class="media-list">
+    <h3>Uploaded Files</h3>
+    <ul>
+      <li *ngFor="let media of mediaList">
+        <ng-container *ngIf="isImage(media.file_path)">
+          <img
+            [src]="
+              'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/' +
+              media.file_path
+            "
+            alt="{{ media.file_name }}"
+            style="width: 100px"
+          />
+        </ng-container>
+        <ng-container *ngIf="isPdf(media.file_path)">
+          <a
+            [href]="
+              'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/' +
+              media.file_path
+            "
+            target="_blank"
+            >{{ media.file_name }} (PDF)</a
+          >
+        </ng-container>
+        <ng-container *ngIf="isCsv(media.file_path)">
+          <a
+            [href]="
+              'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/' +
+              media.file_path
+            "
+            target="_blank"
+            >{{ media.file_name }} (CSV)</a
+          >
+        </ng-container>
+        <ng-container *ngIf="isOther(media.file_path)">
+          <a
+            [href]="
+              'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/' +
+              media.file_path
+            "
+            target="_blank"
+            >{{ media.file_name }}</a
+          >
+        </ng-container>
+        <button
+          (click)="openDeleteModal(deleteModal, media.id)"
+          ngbTooltip="Delete this file"
+        >
+          Delete
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #deleteModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Confirm Delete</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">Are you sure you want to delete this file?</div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="modal.dismiss('Cancel click')"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="confirmDelete(modal)"
+      >
+        Delete
+      </button>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,53 @@
+<div class="sidebar custom-scrollbar">
+  <a href="javascript:void(0)" class="sidebar-back d-lg-none d-block"
+    ><i class="fa fa-times" aria-hidden="true"></i
+  ></a>
+  <ul class="sidebar-menu">
+    @for (root of menuItems; track root.title) {
+      <!-- (click)="toggleActive(root)"
+       [ngClass]="{ 'active': root.isActive }" 
+      
+      -->
+    <li class="active">
+      <a
+        [routerLink]="root.link"
+        routerLinkActive="active"
+        class="sidebar-header"
+      >
+        <span [attr.class]="'feather ' + root.icon"></span>
+        <span>{{ root.title }}</span>
+        @if (root.children) {
+        <i class="fa fa-angle-right pull-right"></i>
+        }
+      </a>
+
+      <ul class="sidebar-submenu">
+        @for (sub of root.children; track sub.title) {
+        <li class="active">
+          <a
+            [routerLink]="sub.link"
+            routerLinkActive="router-link-active"
+            
+          >
+            <i class="fa fa-circle"></i>{{ sub.title }}
+          </a>
+
+          <ul class="sidebar-submenu">
+            @for (innerSub of sub.children; track innerSub.title) {
+            <li>
+              <a
+                [routerLink]="innerSub.link"
+                routerLinkActive="router-link-active"
+              >
+                <i class="fa fa-circle"></i>{{ innerSub.title }}
+              </a>
+            </li>
+            }
+          </ul>
+        </li>
+        }
+      </ul>
+    </li>
+    }
+  </ul>
+</div>
