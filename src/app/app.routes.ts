@@ -3,22 +3,22 @@ import { ProductsComponent } from './pages/products/products.component';
 import { MediaComponent } from './pages/media/media.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './_guards/auth.guard';
-import { LoginRegisterGuard } from './_guards/loginandregister.guard';
+import { authGuard } from './_guards/auth.guard';
+import { loginRegisterGuard } from './_guards/loginandregister.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'products', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [LoginRegisterGuard],
+    canActivate: [loginRegisterGuard],
   },
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [LoginRegisterGuard],
+    canActivate: [loginRegisterGuard],
   },
-  { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
-  { path: 'media', component: MediaComponent, canActivate: [AuthGuard] },
+  { path: 'products', component: ProductsComponent, canActivate: [authGuard] },
+  { path: 'media', component: MediaComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: 'products', pathMatch: 'full' },
 ];

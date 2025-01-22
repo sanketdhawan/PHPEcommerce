@@ -29,13 +29,7 @@ export class AppComponent implements OnInit {
     this.isAuthenticated$ = this.authService.isAuthenticated$();
   }
 
-  ngOnInit(): void {
-    this.isAuthenticated$.subscribe((isAuthenticated) => {
-      if (!isAuthenticated && this.router.url !== '/login' && this.router.url !== '/register') {
-        this.router.navigate(['/login']);
-      }
-    });
-  }
+  ngOnInit(): void {}
 
   logout(): void {
     this.authService.clearToken();

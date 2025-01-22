@@ -1,25 +1,35 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { AuthService } from '../_services/authentication.service';
-import { map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class LoginRegisterGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+export const loginRegisterGuard = (): Observable<boolean> => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
 
-  canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated$().pipe(
-      map((isAuthenticated) => {
-        if (!isAuthenticated) {
-          return true;
-        } else {
-          this.router.navigate(['/products']);
-          return false;
+  // Check if running in the browser
+  if (isPlatformBrowser(platformId)) {
+    const token = localStorage.getItem('jwtToken') || '';
+
+    return authService.authenticateUser(token).pipe(
+      switchMap((response) => {
+        if (response.message === 'Access granted') {
+          // User is authenticated, redirect to /products
+          router.navigate(['/products']);
+          return of(false); // Block access to login/register
         }
+        return of(true); // Allow access to login/register
+      }),
+      catchError(() => {
+        // In case of error, allow access to login/register
+        return of(true);
       })
     );
+  } else {
+    // If not running in the browser, allow access to login/register
+    return of(true);
   }
-}
+};
