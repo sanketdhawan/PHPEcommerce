@@ -1,31 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { LogoComponent } from './header/logo/logo.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { ProductsComponent } from './pages/products/products.component';
 import { Router } from '@angular/router';
 import { AuthService } from './_services/authentication.service';
-import { NgIf } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     HeaderComponent,
     LogoComponent,
     SidebarComponent,
-    ProductsComponent,
-    NgIf
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'admin';
-  isAuthenticated: boolean = false; constructor(private router: Router, private authService: AuthService) { this.authService.isAuthenticated().subscribe((status) => { this.isAuthenticated = status; console.log('Authenticated:', status); }); } logout(): void {
-    this.authService.logout(); this.router.navigate(['/login']);
+  isAuthenticated$: Observable<boolean>;
 
+  constructor(private router: Router, private authService: AuthService) {
+    this.isAuthenticated$ = this.authService.isAuthenticated$();
+  }
+
+  ngOnInit(): void {
+    this.isAuthenticated$.subscribe((isAuthenticated) => {
+      if (!isAuthenticated && this.router.url !== '/login' && this.router.url !== '/register') {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  logout(): void {
+    this.authService.clearToken();
+    this.router.navigate(['/login']);
   }
 }

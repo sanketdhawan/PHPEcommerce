@@ -12,9 +12,10 @@ import { AuthService } from '../_services/authentication.service';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  menuItems: SidebarItem[] = [];
+  menuItems: SidebarItem[] = SIDEBAR_MENU;
   
   constructor(private authService: AuthService) {}
+
   @Input() name!: string;
 
   isOpen= false;

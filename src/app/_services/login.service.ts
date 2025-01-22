@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class LoginService {
-  private apiUrl = 'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/login.php'; // Update with your API endpoint
+  private apiUrl = 'https://mediumvioletred-swallow-606356.hostingersite.com/web_api/login.php';
 
   constructor(private http: HttpClient) { }
 

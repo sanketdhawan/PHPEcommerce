@@ -1,17 +1,29 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-import { Router, RouterLink } from '@angular/router';  // Import Router
+import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../_services/login.service';
+import { AuthService } from '../_services/authentication.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [CommonModule, HttpClientModule, NgbAlertModule, ReactiveFormsModule,RouterLink],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    NgbAlertModule,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -21,7 +33,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private router: Router  // Inject Router for navigation
+    private authService: AuthService,
+    private router: Router 
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,25 +51,26 @@ export class LoginComponent {
 
     const formData = this.loginForm.value;
 
-    this.loginService.loginUser(formData).subscribe(
-      (response) => {
+    this.loginService.loginUser(formData).subscribe({
+      next: (response) => {
         if (response.result === 'success') {
           this.alertType = 'success';
           this.alertMessage = 'Login successful!';
           this.loginForm.reset();
-
-          // Navigate to the products page or any other protected page
-          this.router.navigate(['/products']);  // Redirect after successful login
+          this.authService.setToken(response.token); // Store JWT token
+          this.router.navigate(['/products']); // Redirect after successful login
         } else {
           this.alertType = 'danger';
+          this.authService.clearToken();
           this.alertMessage = response.message || 'Invalid email or password.';
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error:', error);
         this.alertType = 'danger';
+        this.authService.clearToken();
         this.alertMessage = 'An error occurred. Please try again later.';
       }
-    );
+    });
   }
 }
